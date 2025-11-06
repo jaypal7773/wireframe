@@ -41,3 +41,7 @@ UserSchema.methods.comparePassword = async function(plainPassword){
 UserSchema.methods.genrateToken = function(){
     return JWT.sign({_id:this._id}, process.env.JWT_SECRET, {expiresIn: "1d"})
 }
+
+export const userModel = mongoose.model("User", UserSchema)
+export default userModel
+

@@ -20,7 +20,12 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 //routes
+import userRoutes from "./routes/userRoutes.js"
 
+
+
+//routes connect
+app.use("/api/user", userRoutes)
 
 // Port setup
 const PORT = process.env.PORT || 5000;
