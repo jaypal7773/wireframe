@@ -18,28 +18,40 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        require: [true, "password is required"]
+        require: [true, "password is required"],
     },
-    confirmPassword: {
+    resetPasswordOTP: {
         type: String,
-        require: [true, "confirm password is required"]
+        default: null,
+    },
+    resetPasswordExpires: {
+        type: Date,
+        default: null,
+    },
+    role: {
+        type: String,
+        enum: ["user", "admin"],
+        default: "user"
     }
-},{timestamps : true})
+}, { timestamps: true })
 
 //hash password
 UserSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 10);
+    if (!this.isModified("password")) return next();
+    this.password = await bcrypt.hash(this.password, 10);
 });
 
 //compare password
-UserSchema.methods.comparePassword = async function(plainPassword){
+UserSchema.methods.comparePassword = async function (plainPassword) {
     return await bcrypt.compare(plainPassword, this.password)
+}
+UserSchema.methods.comparePass = async function (plainPass) {
+    return await bcrypt.compare(plainPass, this.confirmPassword)
 }
 
 //JWT token
-UserSchema.methods.genrateToken = function(){
-    return JWT.sign({_id:this._id}, process.env.JWT_SECRET, {expiresIn: "1d"})
+UserSchema.methods.genrateToken = function () {
+    return JWT.sign({ _id: this._id }, process.env.JWT_SECRET, { expiresIn: "1d" })
 }
 
 export const userModel = mongoose.model("User", UserSchema)

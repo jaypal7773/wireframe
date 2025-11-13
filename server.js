@@ -21,11 +21,18 @@ app.use(express.urlencoded({ extended: true }));
 
 //routes
 import userRoutes from "./routes/userRoutes.js"
+import vendorRoutes from "./routes/vendorRoutes.js"
+import billRoutes from "./routes/billRoutes.js"
+import paymentRoutes from "./routes/paymentRoutes.js"
+
 
 
 
 //routes connect
 app.use("/api/user", userRoutes)
+app.use("/api/vendor-details", vendorRoutes)
+app.use("/api/bill", billRoutes)
+app.use("/api/payment", paymentRoutes)
 
 // Port setup
 const PORT = process.env.PORT || 5000;
