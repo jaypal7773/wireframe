@@ -1,0 +1,49 @@
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyD_ezIQXT3stA4t1z6OZPMdtn9VbalFppo",
+        authDomain: "wireframes-1552b.firebaseapp.com",
+        projectId: "wireframes-1552b",
+        storageBucket: "wireframes-1552b.appspot.com",
+        messagingSenderId: "1030762362795",
+        appId: "1:1030762362795:web:6ec598f35186adf13784ee"
+    };
+
+    // Init Firebase (module)
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+
+    // Register service worker (module type)
+    navigator.serviceWorker.register("/firebase-messaging-sw.js", {
+        type: "module"
+    }).then(reg => {
+
+        console.log("Service Worker registered:", reg);
+
+        document.querySelector("button").addEventListener("click", async () => {
+
+            const permission = await Notification.requestPermission();
+            if (permission !== "granted") {
+                alert("Notification permission denied");
+                return;
+            }
+
+            try {
+                const token = await getToken(messaging, {
+                    vapidKey: "BOvxsBSFhiw9zFhQ-sYasOq9VrDWpTlNDv6QMBOF4ywU0jTtM6loZXtKP9lWkvAeRp5paMam1-5opvyYrX8",
+                    serviceWorkerRegistration: reg
+                });
+
+                console.log("FCM TOKEN:", token);
+                document.getElementById("tokenBox").innerText = token;
+
+            } catch (err) {
+                console.error("Error getting token:", err);
+            }
+
+        });
+
+    });
+</script>
